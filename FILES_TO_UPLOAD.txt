@@ -1,0 +1,31 @@
+===============================================================================
+FILES TO UPLOAD TO SERVER
+===============================================================================
+
+Upload these files to: https://isu-documentrequest.online/ac_controller_system/
+
+NEW FILES (upload these):
+-------------------------
+1. public/test-heartbeat-post.html    → Test suite interface
+2. public/api-echo.php                → POST diagnostic tool  
+3. public/direct-post-test.php        → Direct POST test
+4. TESTING_GUIDE.md                   → Detailed testing guide
+5. POST_DEBUGGING_STATUS.md           → Problem analysis
+6. QUICK_TEST_INSTRUCTIONS.md         → Quick instructions
+7. FILES_TO_UPLOAD.txt                → This file
+
+UPDATED FILES (replace existing):
+----------------------------------
+1. routes/api.php                     → Enhanced logging added
+
+===============================================================================
+AFTER UPLOADING
+===============================================================================
+
+1. Open: https://isu-documentrequest.online/ac_controller_system/public/test-heartbeat-post.html
+
+2. Click "Test Heartbeat POST" button
+
+3. Report the result!
+
+===============================================================================

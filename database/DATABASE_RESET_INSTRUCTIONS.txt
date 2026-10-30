@@ -1,0 +1,275 @@
+================================================================================
+  DATABASE RESET INSTRUCTIONS
+================================================================================
+
+📋 WHAT'S IN complete_schema.sql:
+---------------------------------
+
+✅ Drops all existing tables (clean slate)
+✅ Creates fresh database structure
+✅ Includes ONLY:
+   - 1 Admin user (username: admin, password: password)
+   - 1 Device (ESP32_OUTLET_001 with API key)
+   - No test users
+   - No sample SIM numbers
+   - No sample schedules
+   - No sample activity logs
+
+================================================================================
+
+🔄 HOW TO RESET DATABASE:
+------------------------
+
+OPTION 1: Using phpMyAdmin
+--------------------------
+1. Login to phpMyAdmin
+2. Select database: u907280979_docrequest
+3. Click "Import" tab
+4. Choose file: complete_schema.sql
+5. Click "Go"
+6. Wait for success message
+
+OPTION 2: Using MySQL Command Line
+-----------------------------------
+1. Open terminal/command prompt
+2. Navigate to database folder:
+   cd c:\xampp\htdocs\ac_controller_system\database
+
+3. Run command:
+   mysql -u u907280979_darryl -p u907280979_docrequest < complete_schema.sql
+
+4. Enter password: tamayO123
+5. Wait for completion
+
+OPTION 3: Using MySQL Workbench
+--------------------------------
+1. Open MySQL Workbench
+2. Connect to your database
+3. File → Open SQL Script
+4. Select: complete_schema.sql
+5. Click Execute (⚡)
+6. Wait for completion
+
+================================================================================
+
+⚠️ IMPORTANT WARNINGS:
+---------------------
+
+1. THIS WILL DELETE ALL DATA!
+   - All users (except admin)
+   - All devices (except ESP32_OUTLET_001)
+   - All schedules
+   - All activity logs
+   - All SIM numbers
+   - All sessions
+
+2. BACKUP FIRST IF NEEDED!
+   If you have important data, export it first:
+   phpMyAdmin → Export → Go
+
+3. CANNOT BE UNDONE!
+   Once executed, all data is permanently deleted
+
+================================================================================
+
+✅ AFTER RESET, YOU WILL HAVE:
+-----------------------------
+
+DEFAULT ADMIN USER:
+  Username: admin
+  Password: password
+  Role: admin
+  Status: Active
+
+DEFAULT DEVICE:
+  Device Name: Main Outlet
+  Device ID: ESP32_OUTLET_001
+  API Key: IOT_OUTLET_2026_SECURE_KEY_XJ9KP2M8N5QW7R3T
+  Status: Active
+  Outlet: OFF
+  Mode: Manual
+
+EMPTY TABLES:
+  - No additional users
+  - No schedules
+  - No SIM numbers
+  - No activity logs (except auto-generated)
+  - No sessions
+
+================================================================================
+
+🎯 TYPICAL USE CASES:
+--------------------
+
+Use this reset when:
+✓ Starting fresh with production deployment
+✓ Testing from clean state
+✓ Removing test/sample data
+✓ Fixing corrupted database
+✓ Development environment setup
+
+================================================================================
+
+📝 WHAT HAPPENS STEP-BY-STEP:
+-----------------------------
+
+1. SET FOREIGN_KEY_CHECKS = 0
+   (Allows dropping tables with relationships)
+
+2. DROP ALL EXISTING TABLES:
+   - iot_outlet_activity_logs
+   - iot_outlet_schedules
+   - iot_outlet_authorized_sims
+   - iot_outlet_devices
+   - iot_outlet_sessions
+   - iot_outlet_password_resets
+   - iot_outlet_users
+
+3. DROP ALL VIEWS:
+   - iot_outlet_active_schedules_view
+   - iot_outlet_recent_activity_view
+   - iot_outlet_device_status_view
+
+4. DROP ALL STORED PROCEDURES:
+   - sp_iot_outlet_cleanup_old_logs
+   - sp_iot_outlet_get_user_stats
+   - sp_iot_outlet_update_heartbeat
+
+5. SET FOREIGN_KEY_CHECKS = 1
+   (Re-enable foreign key checks)
+
+6. CREATE ALL TABLES (empty)
+
+7. CREATE ALL VIEWS
+
+8. CREATE ALL STORED PROCEDURES
+
+9. CREATE ALL TRIGGERS
+
+10. CREATE ALL INDEXES
+
+11. INSERT DEFAULT DATA:
+    - 1 admin user
+    - 1 device
+
+DONE! ✓
+
+================================================================================
+
+🔑 DEFAULT CREDENTIALS:
+----------------------
+
+WEB LOGIN:
+  URL: https://isu-documentrequest.online/ac_controller_system
+  Username: admin
+  Password: password
+
+ESP32 DEVICE 1:
+  Device ID: ESP32_OUTLET_001
+  API Key: IOT_OUTLET_2026_SECURE_KEY_XJ9KP2M8N5QW7R3T
+  File to use: device_1_outlet.ino
+
+================================================================================
+
+📊 NEXT STEPS AFTER RESET:
+--------------------------
+
+1. VERIFY LOGIN:
+   - Go to website
+   - Login with admin/password
+   - Check dashboard loads
+
+2. VERIFY DEVICE:
+   - Go to ESP32 Devices
+   - Should see: Main Outlet (ESP32_OUTLET_001)
+   - Status: Inactive (until ESP32 connects)
+
+3. UPLOAD ESP32 FIRMWARE:
+   - Use device_1_outlet.ino (already configured)
+   - Upload to ESP32
+   - Verify device shows Online
+
+4. REGISTER ADDITIONAL DEVICES (if needed):
+   - ESP32 Devices → Register New Device
+   - Get API key
+   - Update device_2_outlet.ino or device_3_outlet.ino
+   - Upload to ESP32
+
+5. ADD USERS (if needed):
+   - Users → Create User
+   - Fill in details
+   - Save
+
+6. ADD SIM NUMBERS (if needed):
+   - SIM Cards → Add New
+   - Enter phone number and owner
+   - Save
+
+7. CREATE SCHEDULES (if needed):
+   - Schedules → Create Schedule
+   - Select device
+   - Set times
+   - Save
+
+================================================================================
+
+⚡ QUICK RESET CHECKLIST:
+------------------------
+
+□ Backup existing data (if needed)
+□ Open phpMyAdmin
+□ Select correct database (u907280979_docrequest)
+□ Click Import tab
+□ Choose complete_schema.sql
+□ Click Go
+□ Wait for "Import has been successfully finished"
+□ Verify: 1 user, 1 device created
+□ Login with admin/password
+□ Test: ESP32 Devices page loads
+□ Upload ESP32 firmware
+□ Test: Device shows online
+
+================================================================================
+
+🎉 DATABASE IS NOW CLEAN AND READY!
+-----------------------------------
+
+You have:
+✓ Fresh database structure
+✓ All tables created
+✓ All views, procedures, triggers set up
+✓ 1 admin user ready
+✓ 1 device ready for ESP32
+
+Start building your system from here! 🚀
+
+================================================================================
+
+❓ NEED HELP?
+------------
+
+If import fails:
+→ Check MySQL user has proper permissions
+→ Check database name is correct
+→ Check SQL syntax errors in phpMyAdmin
+
+If login doesn't work:
+→ Username: admin (lowercase)
+→ Password: password (lowercase)
+→ Clear browser cache
+→ Check session configuration
+
+If device won't connect:
+→ Upload device_1_outlet.ino to ESP32
+→ API key is already correct in the file
+→ Check WiFi credentials in .ino file
+→ Check Serial Monitor for errors
+
+================================================================================
+
+For detailed setup, see:
+→ FINAL_SETUP_SUMMARY.txt
+→ SETUP_INSTRUCTIONS_3_DEVICES.txt
+→ README_MULTI_DEVICE.md
+
+================================================================================

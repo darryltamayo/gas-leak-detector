@@ -1,0 +1,2 @@
+# This file ensures the cache directory is preserved in version control
+# The cache directory needs to be writable by the web server

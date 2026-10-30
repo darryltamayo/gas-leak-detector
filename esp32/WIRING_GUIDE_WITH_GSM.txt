@@ -1,0 +1,299 @@
+================================================================================
+COMPLETE WIRING GUIDE - ESP32 + GSM900A + Single Relay
+================================================================================
+
+This guide shows you exactly where to connect each wire for your IoT outlet
+controller system. Each device has the same components:
+- 1x ESP32 Development Board
+- 1x GSM900A Module (SIM900A)
+- 1x Single-Channel Relay Module
+- 1x 5V 2A Power Supply (minimum)
+- 1x SIM Card (with SMS capability)
+
+================================================================================
+COMPONENT 1: GSM900A MODULE
+================================================================================
+
+The GSM900A module allows SMS control when WiFi is unavailable.
+
+┌─────────────────────────────────────────┐
+│         GSM900A Module Pins             │
+├─────────────────────────────────────────┤
+│ VCC  → ESP32 5V (or external 5V supply)│
+│ GND  → ESP32 GND                        │
+│ RXD  → ESP32 GPIO 17 (TX2)              │
+│ TXD  → ESP32 GPIO 16 (RX2)              │
+└─────────────────────────────────────────┘
+
+⚠️ IMPORTANT NOTES:
+- GSM900A requires 5V power (NOT 3.3V!)
+- Can draw up to 2A during transmission
+- MUST connect antenna before powering on
+- Use a good quality 5V 2A power supply
+- Insert SIM card (check PIN is disabled)
+
+ANTENNA:
+- Connect the GSM antenna to the antenna connector
+- Make sure it's properly screwed in
+- DO NOT power on without antenna (can damage module)
+
+SIM CARD:
+- Insert micro SIM card into slot
+- Make sure SIM PIN is disabled (use phone to disable)
+- Check that SMS is enabled on your plan
+- Data plan is NOT required (only SMS)
+
+================================================================================
+COMPONENT 2: SINGLE-CHANNEL RELAY MODULE
+================================================================================
+
+The relay module controls the AC outlet (AC, light, appliance).
+
+┌─────────────────────────────────────────┐
+│    Single-Channel Relay Module Pins     │
+├─────────────────────────────────────────┤
+│ VCC  → 5V (from ESP32 VIN or external) │
+│ GND  → ESP32 GND                        │
+│ IN   → ESP32 GPIO 5                     │
+└─────────────────────────────────────────┘
+
+RELAY AC CONNECTIONS:
+The relay has 3 terminals: COM, NO, NC
+
+For the outlet:
+┌──────────────────────────────────┐
+│ AC Input → Relay COM             │
+│ AC Output → Relay NO (Normal Open)│
+│ (NC terminal is not used)        │
+└──────────────────────────────────┘
+
+⚠️ SAFETY WARNING:
+- Only qualified electricians should wire AC connections
+- AC voltage can be LETHAL - use extreme caution
+- Always disconnect power before wiring
+- Use proper gauge wire rated for your load
+- Follow local electrical codes
+
+================================================================================
+COMPONENT 3: ESP32 DEVELOPMENT BOARD
+================================================================================
+
+Main controller board - All components connect here.
+
+┌─────────────────────────────────────────────────┐
+│           ESP32 Pin Connections                 │
+├─────────────────────────────────────────────────┤
+│ 5V/VIN → Power supply (+5V)                     │
+│ GND    → Power supply (GND) & all module GND    │
+│                                                  │
+│ GPIO 16 → GSM900A TXD (ESP32 receives)          │
+│ GPIO 17 → GSM900A RXD (ESP32 transmits)         │
+│                                                  │
+│ GPIO 5  → Relay Module IN                       │
+│                                                  │
+│ GPIO 2  → LED (Optional status indicator)       │
+└─────────────────────────────────────────────────┘
+
+================================================================================
+COMPLETE WIRING DIAGRAM (ASCII ART)
+================================================================================
+
+                     ┌──────────────────┐
+                     │  5V Power Supply │
+                     │    (2A minimum)  │
+                     └─────┬───────┬────┘
+                           │       │
+                          +5V     GND
+                           │       │
+        ┌──────────────────┼───────┼──────────────────┐
+        │                  │       │                  │
+        │              ┌───┴───────┴───┐              │
+        │              │    ESP32      │              │
+        │              │               │              │
+        │     GPIO16◄──┤RX2            │              │
+        │     GPIO17──►│TX2            │              │
+        │     GPIO5 ──►│               │              │
+        │              │               │              │
+        │              │               │              │
+        │              └───────────────┘              │
+        │                                             │
+        │                                             │
+   ┌────▼────┐                               ┌───────▼────────┐
+   │GSM900A  │                               │ Relay Module   │
+   │         │                               │  (Single CH)   │
+   │VCC  GND │                               │VCC  GND        │
+   │RXD  TXD │                               │IN              │
+   │         │                               │                │
+   │[Antenna]│                               │COM NO NC       │
+   │[SIM Card]                               │                │
+   └─────────┘                               └────────────────┘
+                                                     │
+                                                 AC Outlet
+
+================================================================================
+POWER SUPPLY REQUIREMENTS
+================================================================================
+
+Recommended: 5V 2A (10W) DC Power Supply
+
+Power Consumption:
+- ESP32: ~500mA (during WiFi)
+- GSM900A: ~300mA idle, up to 2A during transmission
+- Relay Module: ~70mA
+- Total: 2A maximum
+
+⚠️ Use a quality power supply with overcurrent protection!
+
+Power Distribution:
+- Connect 5V and GND to ESP32 VIN and GND
+- ESP32 shares power with relays
+- GSM gets power from ESP32 5V or separate source
+
+Alternative: Use a 5V 3A supply for extra headroom
+
+================================================================================
+STEP-BY-STEP WIRING PROCEDURE
+================================================================================
+
+STEP 1: Prepare Components
+□ ESP32 board
+□ GSM900A module with antenna
+□ Single-channel relay module
+□ Jumper wires (male-to-female)
+□ 5V 2A power supply
+□ SIM card (PIN disabled)
+
+STEP 2: Connect Power (DO NOT POWER ON YET)
+□ Connect 5V wire to ESP32 VIN
+□ Connect GND wire to ESP32 GND
+□ Connect ESP32 GND to GSM GND
+□ Connect ESP32 GND to Relay GND
+□ Connect ESP32 5V to GSM VCC
+□ Connect ESP32 5V to Relay VCC
+
+STEP 3: Connect GSM Serial
+□ ESP32 GPIO 16 → GSM TXD
+□ ESP32 GPIO 17 → GSM RXD
+□ Attach antenna to GSM module
+□ Insert SIM card into GSM module
+
+STEP 4: Connect Relay Control
+□ ESP32 GPIO 5 → Relay IN
+
+STEP 5: Optional - Status LED
+□ GPIO 2 → 220Ω resistor → LED(+) → LED(-) → GND
+
+STEP 6: Double Check
+□ All GND pins connected together (common ground)
+□ GSM antenna attached
+□ SIM card inserted
+□ No loose connections
+□ No short circuits
+
+STEP 7: Power On & Test
+□ Connect USB cable to ESP32 (for programming)
+□ Upload Arduino sketch
+□ Open Serial Monitor (115200 baud)
+□ Check for GSM initialization messages
+□ Check for WiFi connection messages
+
+================================================================================
+TESTING CHECKLIST
+================================================================================
+
+After wiring, test each component:
+
+□ ESP32 Powers On
+  - LED on ESP32 board lights up
+  - Serial monitor shows boot messages
+
+□ GSM Module Works
+  - Green LED on GSM blinks (searching for network)
+  - Red LED stays on (power)
+  - Serial monitor shows "GSM module responded"
+
+□ WiFi Connects
+  - Serial monitor shows "WiFi connected"
+  - Shows IP address
+
+□ Relays Work
+  - Send test command from website
+  - Hear relay click
+  - LED on relay board lights up
+
+□ SMS Works
+  - Send SMS: "STATUS" to device
+  - Device replies with status
+  - Send SMS: "ON 1" to turn on outlet 1
+
+================================================================================
+TROUBLESHOOTING
+================================================================================
+
+Problem: GSM not responding
+Solution:
+- Check RX/TX wires (GPIO 16 and 17)
+- Make sure GSM has 5V power (not 3.3V)
+- Attach antenna
+- Wait 10-15 seconds after power on for initialization
+
+Problem: Relays don't click
+Solution:
+- Check IN connection to GPIO 5
+- Measure voltage on GPIO 5 (should be 3.3V when HIGH)
+- Check relay module has power (5V on VCC)
+- Try inverting relay logic (if active LOW module)
+
+Problem: WiFi won't connect
+Solution:
+- Check SSID and password in code
+- Make sure using 2.4GHz WiFi (not 5GHz)
+- ESP32 must be in range of router
+
+Problem: SMS not received
+Solution:
+- Check SIM card is inserted correctly
+- Make sure SIM PIN is disabled
+- Check SIM has SMS capability
+- Wait for network registration (up to 1 minute)
+
+Problem: ESP32 keeps resetting
+Solution:
+- Power supply insufficient (use 2A minimum)
+- GSM drawing too much current
+- Use separate power supply for GSM
+
+================================================================================
+SMS COMMANDS
+================================================================================
+
+Send these SMS commands to control the device:
+
+STATUS       - Get current status of all outlets
+ON ALL       - Turn on all outlets
+OFF ALL      - Turn off all outlets
+ON 1         - Turn on outlet 1
+OFF 1        - Turn off outlet 1
+ON 2         - Turn on outlet 2
+OFF 2        - Turn off outlet 2
+ON 3         - Turn on outlet 3
+OFF 3        - Turn off outlet 3
+
+⚠️ Only authorized phone numbers can control (set in code)
+
+================================================================================
+AUTHORIZED NUMBERS SETUP
+================================================================================
+
+In the Arduino sketch, find this section:
+
+const char* AUTHORIZED_NUMBERS[] = {
+  "+639123456789",     // ⚠️ Change to your number
+  "+639987654321"      // Add more numbers
+};
+const int NUM_AUTHORIZED = 2;  // Update count
+
+Replace with actual phone numbers that should have access.
+Use international format: +63 (country) then number
+
+================================================================================

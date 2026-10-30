@@ -1,0 +1,201 @@
+=================================================================
+CRON JOB SETUP FOR ONLINE SERVER (cPanel/Hosting)
+=================================================================
+
+Your schedules won't execute automatically without a cron job.
+Follow these steps to set it up:
+
+=================================================================
+STEP 1: Login to cPanel
+=================================================================
+
+1. Go to your hosting control panel
+2. Find "Cron Jobs" icon (usually under "Advanced" section)
+3. Click to open Cron Jobs manager
+
+=================================================================
+STEP 2: Add New Cron Job
+=================================================================
+
+Select Frequency: Every Minute
+Or use Common Settings: "Once Per Minute (* * * * *)"
+
+-----------------------------------------------------------------
+Command to Run:
+-----------------------------------------------------------------
+
+OPTION A - Standard Path (try this first):
+/usr/bin/php /home/u907280979/public_html/cron/execute_schedules.php
+
+OPTION B - If Option A fails:
+/usr/local/bin/php /home/u907280979/public_html/cron/execute_schedules.php
+
+OPTION C - Alternative (ea-php):
+/opt/cpanel/ea-php74/root/usr/bin/php /home/u907280979/public_html/cron/execute_schedules.php
+
+-----------------------------------------------------------------
+Cron Expression Explained:
+-----------------------------------------------------------------
+* * * * * = Run every minute
+│ │ │ │ │
+│ │ │ │ └─── Day of week (0-7, Sunday = 0 or 7)
+│ │ │ └───── Month (1-12)
+│ │ └─────── Day of month (1-31)
+│ └───────── Hour (0-23)
+└─────────── Minute (0-59)
+
+=================================================================
+STEP 3: Find Your Correct PHP Path
+=================================================================
+
+If you have SSH access:
+1. Login via SSH
+2. Run: which php
+3. Copy the path shown (e.g., /usr/bin/php)
+
+Without SSH:
+1. Create a file: public/phpinfo.php
+2. Add content: <?php echo PHP_BINARY; ?>
+3. Visit: https://isu-documentrequest.online/public/phpinfo.php
+4. Use the path shown
+5. Delete phpinfo.php after
+
+=================================================================
+STEP 4: Find Your Correct File Path
+=================================================================
+
+Common patterns:
+/home/USERNAME/public_html/cron/execute_schedules.php
+/home/USERNAME/domains/DOMAIN/public_html/cron/execute_schedules.php
+/home/USERNAME/htdocs/cron/execute_schedules.php
+
+Your likely path:
+/home/u907280979/public_html/cron/execute_schedules.php
+
+To verify in cPanel:
+1. Go to File Manager
+2. Navigate to your cron folder
+3. Look at the full path in the address bar
+
+=================================================================
+STEP 5: Set Email Notification (Optional)
+=================================================================
+
+In cPanel Cron Jobs:
+- Email field: your-email@example.com
+  (Gets notified if cron fails)
+- Or leave blank to disable emails
+
+=================================================================
+STEP 6: Test the Cron Job
+=================================================================
+
+Method 1 - Wait and Check:
+1. Wait 1-2 minutes
+2. Refresh test page
+3. Warning should disappear
+
+Method 2 - Manual Test (if you have SSH):
+cd /home/u907280979/public_html
+php cron/execute_schedules.php
+
+Should output: "Schedule execution check completed."
+
+Method 3 - Check Logs:
+Look at: storage/logs/ for any error messages
+
+=================================================================
+STEP 7: Verify It's Working
+=================================================================
+
+Create a test schedule:
+1. Login to your system
+2. Go to Schedules
+3. Create a schedule for current time + 2 minutes
+4. Wait and check Activity Logs
+5. Should see "Schedule executed" entry
+
+=================================================================
+ALTERNATIVE: Manual Cron Command (Full)
+=================================================================
+
+If cPanel asks for full command line:
+
+Command:
+* * * * * /usr/bin/php /home/u907280979/public_html/cron/execute_schedules.php > /dev/null 2>&1
+
+Explanation:
+> /dev/null 2>&1  ← Suppress output (no emails)
+
+Or with logging:
+* * * * * /usr/bin/php /home/u907280979/public_html/cron/execute_schedules.php >> /home/u907280979/cron_log.txt 2>&1
+
+=================================================================
+TROUBLESHOOTING
+=================================================================
+
+Problem: "Command not found"
+Solution: Wrong PHP path, use 'which php' in SSH
+
+Problem: "Permission denied"
+Solution: Set file permissions
+chmod 644 /home/u907280979/public_html/cron/execute_schedules.php
+
+Problem: "No such file or directory"
+Solution: Wrong file path, verify in File Manager
+
+Problem: Cron runs but doesn't work
+Solution: Check these:
+1. Database credentials correct in .env
+2. PHP has permission to write to storage/logs/
+3. Check execute_schedules.php for errors
+
+Problem: "Call to undefined function..."
+Solution: PHP version issue
+- Check PHP version: php -v
+- Ensure PHP 7.4+ is used
+- Try different ea-php version in path
+
+=================================================================
+CRON JOB STATUS CHECK
+=================================================================
+
+Once configured, your test page will show:
+✓ "Last schedule execution: [recent timestamp]"
+
+And the warning will disappear.
+
+=================================================================
+EXAMPLE CRON ENTRIES
+=================================================================
+
+Run every minute (recommended for schedules):
+* * * * * /usr/bin/php /home/u907280979/public_html/cron/execute_schedules.php
+
+Run every 5 minutes (lighter load):
+*/5 * * * * /usr/bin/php /home/u907280979/public_html/cron/execute_schedules.php
+
+Run every hour at minute 0:
+0 * * * * /usr/bin/php /home/u907280979/public_html/cron/execute_schedules.php
+
+=================================================================
+AFTER SETUP
+=================================================================
+
+Your schedules will now:
+✓ Automatically turn outlets ON at scheduled time
+✓ Automatically turn outlets OFF at scheduled time  
+✓ Log all executions to activity logs
+✓ Work even when you're not logged in
+
+=================================================================
+NEED HELP?
+=================================================================
+
+Contact your hosting support and provide:
+- "I need to setup a cron job"
+- Show them: /home/u907280979/public_html/cron/execute_schedules.php
+- Tell them: "Run every minute with PHP"
+- They can set it up for you
+
+=================================================================

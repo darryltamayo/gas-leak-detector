@@ -1,0 +1,180 @@
+================================================================================
+                    WHY YOU'RE GETTING HTTP 401 ERROR
+================================================================================
+
+CURRENT SITUATION:
+──────────────────────────────────────────────────────────────────────────────
+
+┌─────────────────────────────────────────────────────────────────────────┐
+│                            YOUR ESP32 DEVICE                             │
+│                      (in your hand, working fine)                        │
+└──────────────────────────┬──────────────────────────────────────────────┘
+                           │
+                           │ Sends API Request:
+                           │ Device ID: ESP32_OUTLET_001
+                           │ API Key: IOT_OUTLET_2026_SECURE_KEY_XJ9KP2M8N5QW7R3T
+                           │
+                           ▼
+┌─────────────────────────────────────────────────────────────────────────┐
+│                    ONLINE SERVER (isu-documentrequest.online)            │
+│                 ❌ STILL HAS OLD CODE (before your fix)                  │
+│                                                                           │
+│  Old Code Says:                                                          │
+│  "I need SERVER API KEY in HTTP HEADER"                                 │
+│  "I don't accept DEVICE API KEY in BODY"                                │
+│                                                                           │
+│  Result: ❌ HTTP 401 UNAUTHORIZED                                        │
+└─────────────────────────────────────────────────────────────────────────┘
+
+
+WHAT YOU NEED TO DO:
+──────────────────────────────────────────────────────────────────────────────
+
+Upload the fixed file from your computer to the server!
+
+┌─────────────────────────────────────────────────────────────────────────┐
+│                         YOUR LOCAL COMPUTER                              │
+│                  C:\xampp\htdocs\ac_controller_system\                   │
+│                                                                           │
+│  File: routes/api.php  ← ✅ HAS THE FIX!                                │
+│  - Accepts device API key                                               │
+│  - Validates against database                                           │
+│  - Will work with ESP32                                                 │
+└──────────────────────────┬──────────────────────────────────────────────┘
+                           │
+                           │ ⬆️ UPLOAD THIS FILE!
+                           │
+                           ▼
+┌─────────────────────────────────────────────────────────────────────────┐
+│                    ONLINE SERVER (isu-documentrequest.online)            │
+│      /public_html/ac_controller_system/routes/api.php                   │
+│                                                                           │
+│  After Upload:                                                           │
+│  ✅ New code accepts device API key                                     │
+│  ✅ Validates ESP32_OUTLET_001 + its unique key                         │
+│  ✅ Returns HTTP 200 SUCCESS                                            │
+└─────────────────────────────────────────────────────────────────────────┘
+
+
+AFTER UPLOAD:
+──────────────────────────────────────────────────────────────────────────────
+
+┌─────────────────────────────────────────────────────────────────────────┐
+│                            YOUR ESP32 DEVICE                             │
+└──────────────────────────┬──────────────────────────────────────────────┘
+                           │
+                           │ Sends API Request:
+                           │ Device ID: ESP32_OUTLET_001
+                           │ API Key: IOT_OUTLET_2026_SECURE_KEY_XJ9KP2M8N5QW7R3T
+                           │
+                           ▼
+┌─────────────────────────────────────────────────────────────────────────┐
+│                    ONLINE SERVER (isu-documentrequest.online)            │
+│                      ✅ NOW HAS NEW CODE (your fix)                      │
+│                                                                           │
+│  New Code Says:                                                          │
+│  "Device ID: ESP32_OUTLET_001? ✅ Found in database!"                   │
+│  "API Key matches database? ✅ YES!"                                    │
+│  "Authenticated! ✅"                                                     │
+│                                                                           │
+│  Result: ✅ HTTP 200 SUCCESS                                            │
+│  Returns: {"success":true, "message":"Heartbeat received"}              │
+└─────────────────────────────────────────────────────────────────────────┘
+
+
+================================================================================
+                              SIMPLE STEPS
+================================================================================
+
+STEP 1: Open your hosting File Manager (cPanel)
+        └─ Login to Hostinger
+        └─ Go to File Manager
+
+STEP 2: Navigate to this folder on server:
+        └─ /public_html/ac_controller_system/routes/
+
+STEP 3: Upload the file from your computer:
+        FROM: C:\xampp\htdocs\ac_controller_system\routes\api.php
+        TO:   /public_html/ac_controller_system/routes/api.php
+        └─ Click "Overwrite" if asked
+
+STEP 4: Restart your ESP32
+        └─ Power cycle or press reset button
+
+STEP 5: Watch Serial Monitor
+        └─ Should see: ♥ Heartbeat sent successfully
+        └─ NOT: ⚠ Heartbeat failed: HTTP 401
+
+
+================================================================================
+                            WHY THIS HAPPENS
+================================================================================
+
+You fixed the code on YOUR LOCAL COMPUTER (XAMPP).
+But your ESP32 connects to ONLINE SERVER (isu-documentrequest.online).
+
+The online server doesn't automatically get your local changes.
+You must manually upload the fixed file!
+
+Think of it like this:
+┌──────────────────────┐         ┌──────────────────────┐
+│  Your Local PC       │         │  Online Server       │
+│  (XAMPP)             │         │  (Hostinger)         │
+│                      │         │                      │
+│  ✅ Fixed code       │   ≠     │  ❌ Old code         │
+│                      │         │                      │
+│  ESP32 doesn't       │         │  ESP32 connects      │
+│  connect here        │         │  here!               │
+└──────────────────────┘         └──────────────────────┘
+
+You need to copy the fixed code from LEFT to RIGHT!
+
+
+================================================================================
+                          EXACT FILE TO UPLOAD
+================================================================================
+
+File Name:    api.php
+File Path:    routes/api.php
+
+From (Local):
+C:\xampp\htdocs\ac_controller_system\routes\api.php
+
+To (Server):
+/public_html/ac_controller_system/routes/api.php
+
+Just upload this ONE file!
+Everything else stays the same!
+
+
+================================================================================
+                          WHAT HAPPENS NEXT
+================================================================================
+
+After upload + ESP32 restart:
+
+✅ Heartbeat: SUCCESS (was HTTP 401)
+✅ Authorized Numbers: SUCCESS (was HTTP -1)
+✅ Device Status: ONLINE (was offline)
+✅ Dashboard: Shows device connected
+✅ Control: You can turn outlet ON/OFF from website
+
+
+================================================================================
+                          NEED MORE HELP?
+================================================================================
+
+See detailed instructions in:
+- UPLOAD_GUIDE.md
+- API_FIX_AUTHENTICATION.md
+
+Or just do this:
+1. Login to cPanel/Hostinger
+2. Go to File Manager
+3. Navigate: public_html/ac_controller_system/routes/
+4. Upload: api.php (from your C:\xampp\htdocs\...)
+5. Restart ESP32
+6. Done!
+
+
+================================================================================

@@ -1,0 +1,138 @@
+=================================================================
+ESP32 CONFIGURATION FOR ONLINE SERVER
+=================================================================
+
+Your device "Main Outlet" is offline. Follow these steps to connect:
+
+=================================================================
+STEP 1: Update ESP32 Code with Online Server Details
+=================================================================
+
+Open: universal_outlet_controller.ino
+
+Find and update these lines:
+
+-----------------------------------------------------------------
+WiFi Credentials:
+-----------------------------------------------------------------
+const char* ssid = "YOUR_WIFI_NAME";         // ← Change this!
+const char* password = "YOUR_WIFI_PASSWORD"; // ← Change this!
+
+-----------------------------------------------------------------
+Server Configuration:
+-----------------------------------------------------------------
+const char* serverUrl = "isu-documentrequest.online";  // ← Your domain (NO http://)
+const int serverPort = 443;                            // ← 443 for HTTPS, 80 for HTTP
+const bool useHTTPS = true;                            // ← true for HTTPS
+
+-----------------------------------------------------------------
+API Credentials (from database):
+-----------------------------------------------------------------
+String API_KEY = "IOT_OUTLET_2026_SECURE_KEY_XJ9KP2M8N5QW7R3T";
+String DEVICE_ID = "ESP32_OUTLET_001";
+
+-----------------------------------------------------------------
+API Endpoints:
+-----------------------------------------------------------------
+const char* heartbeatEndpoint = "/public/api.php?action=heartbeat";
+const char* statusEndpoint = "/public/api.php?action=status";
+const char* controlEndpoint = "/public/api.php?action=control";
+
+=================================================================
+STEP 2: Upload Code to ESP32
+=================================================================
+
+1. Connect ESP32 to your computer via USB
+2. Open Arduino IDE
+3. Select Board: "ESP32 Dev Module"
+4. Select Port: (your ESP32 COM port)
+5. Click Upload button
+6. Wait for "Done uploading" message
+
+=================================================================
+STEP 3: Monitor Serial Output
+=================================================================
+
+Open Serial Monitor (Ctrl+Shift+M or Tools > Serial Monitor)
+Set baud rate to: 115200
+
+You should see:
+✓ Connecting to WiFi...
+✓ WiFi connected! IP: 192.168.x.x
+✓ Connecting to server...
+✓ Heartbeat sent successfully
+✓ Device is now ONLINE
+
+If you see errors, check:
+- WiFi credentials are correct
+- Server URL is correct (no http:// prefix)
+- SSL certificate is valid (if using HTTPS)
+- API key matches database
+
+=================================================================
+STEP 4: Verify Connection
+=================================================================
+
+1. Refresh your test page: 
+   https://isu-documentrequest.online/public/test-system.php
+
+2. Check dashboard:
+   https://isu-documentrequest.online/public/
+
+3. Device should show:
+   ✓ Status: ONLINE
+   ✓ Last Heartbeat: Just now
+   ✓ Green indicator
+
+=================================================================
+TROUBLESHOOTING
+=================================================================
+
+Problem: "WiFi connection failed"
+Solution: Double-check WiFi name and password (case-sensitive!)
+
+Problem: "Server connection failed"  
+Solution: 
+- Verify domain is correct: isu-documentrequest.online
+- Check if HTTPS is working in browser
+- Try HTTP instead (serverPort = 80, useHTTPS = false)
+
+Problem: "Heartbeat failed - 401 Unauthorized"
+Solution: API key mismatch
+- Copy exact key from database
+- No extra spaces or quotes
+
+Problem: "Heartbeat failed - 404 Not Found"
+Solution: Endpoint path is wrong
+- Check: /public/api.php?action=heartbeat
+- Verify file exists on server
+
+Problem: "SSL certificate verify failed"
+Solution: 
+- Option 1: Add this line before WiFiClientSecure client:
+  client.setInsecure();
+- Option 2: Use HTTP instead of HTTPS (less secure)
+
+=================================================================
+QUICK TEST - Manual Heartbeat
+=================================================================
+
+Test the API endpoint in browser:
+https://isu-documentrequest.online/public/api.php?action=heartbeat
+
+Should return JSON (even if it fails, shows API is reachable):
+{"error":"Unauthorized"} ← This is OK, means API works
+{"success":true} ← Perfect!
+
+=================================================================
+DEVICE DATABASE INFO
+=================================================================
+
+Device Name: Main Outlet
+Device ID: ESP32_OUTLET_001
+API Key: IOT_OUTLET_2026_SECURE_KEY_XJ9KP2M8N5QW7R3T
+
+Last Heartbeat: 4573 seconds ago (over 1 hour ago)
+Status: OFFLINE
+
+=================================================================
